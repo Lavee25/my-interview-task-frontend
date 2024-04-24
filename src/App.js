@@ -1,12 +1,16 @@
-import UserForm from './components/UserForm';
+
 import'./App.css';
+import AppRouter from './router';
+//import Header from './components/Header';
  
 function App() {
   return (
+    <>
+  
     <div className='App-header '>
-      <UserForm/>
-      </div>
-        
+     <AppRouter/>
+    </div>
+    </>  
   )
 }
 

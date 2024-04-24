@@ -13,41 +13,41 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {useFormik}  from 'formik';
 import * as yup from 'yup';
-//import dayjs from 'dayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-
-const initialValues={
+const initialState={
   image_url:null,
   name: "",
   rollnumber: "",
   date: null
 }
+const defaultImage='https://static-00.iconduck.com/assets.00/user-icon-2048x2048-ihoxz4vq.png'
+
 const validationSchema=yup.object({
-  image_url: yup
+image_url: yup
   .mixed()
   .required('Image is required')
   .test('fileFormat', 'Unsupported format', (value) => {
     return value && ['image/jpg', 'image/jpeg', 'image/png'].includes(value.type);
   }),
   name: yup.string().min(5).max(30).required(),
-  rollnumber: yup.number().min(1).notOneOf(yup.ref('rollnumber'), 'rollnumber is already used').required(),
+  rollnumber: yup.number().min(1).required(),
   date: yup.date().required()
   
 }) 
 const UserForm = () => {
+  
   const notify1=()=>toast("New Student Add Successfully");
+  const[imagesrc,setImagesrc]=useState(defaultImage);
   
   
   const formik=useFormik({
-    initialValues:initialValues,
+    initialValues:initialState,
     validationSchema:validationSchema
   });
  
 
-const[imagesrc,setImagesrc]=useState('https://static-00.iconduck.com/assets.00/user-icon-2048x2048-ihoxz4vq.png');
 const handleImageChange = (e) => {
   const file = e.target.files[0];
   if (file) {
@@ -61,39 +61,31 @@ const handleImageChange = (e) => {
 
 
     const handleSubmit= async()=>{
-    try {
-       const formdata = new FormData(); // Create a FormData instance
-        formdata.append("image_url", formik.values.image_url); // Append the image file to the form data
-      await axios.post("http://localhost:8000/api/v1/student/addStudent", (formik.values))
-    .then((response) => {
-     console.log(response);
-     notify1();
-    }).catch((error)=>{
-      console.log({"error":error})
-      
-    })
-    await axios.post("http://localhost:8000/api/v1/student/upload-profile",formdata,{
-      headers:{
-        'Content-Type':`multipart/form-data boundary=${formdata._boundary}`
-      }
-     })
-      .then((response) => {
-       console.log(response);
-       }).catch((error)=>{
-       console.log({"error":error})
-    })
-
-     }
-   catch(error){
-   console.log({'message':error.message})
-    } 
+   try {
+      const formdata = new FormData();                          //Create a FormData instance
+      formdata.append("name", formik.values.name);
+      formdata.append("rollnumber", formik.values.rollnumber);
+      formdata.append("date", formik.values.date);
+      formdata.append("image_url", formik.values.image_url);       // Append the image file to the form data
+  
+      await axios.post("http://localhost:8000/api/v1/student/addStudent", formdata, {
+        headers: {
+          'Content-Type': 'multipart/form-data'          //header for parsing form data
+        }
+      }).then((response) => {
+        //console.log(response);
+        notify1(); 
+        setImagesrc(defaultImage)      
+        formik.resetForm(); 
+      }).catch((error) => {
+        console.error("Error:", error);
+      });
+    } catch (error) {
+      console.error("Message:", error.message);
+    }
   }
- 
-    
 
-
-
-  return (
+ return (
     <>
     <Header/>
   
@@ -107,7 +99,6 @@ const handleImageChange = (e) => {
                 <img
                 src={imagesrc}
                 alt="profile_pic"
-           
                 height={150}
                 width={150}/>
                 <Grid item>
@@ -116,7 +107,6 @@ const handleImageChange = (e) => {
                 type="file"
                 name="image"
                 onChange={handleImageChange}
-              
                 onBlur={formik.handleBlur}
                 error={formik.touched.image && Boolean(formik.errors.image)}
                 helperText={formik.touched.image && formik.errors.image }/>
@@ -126,7 +116,6 @@ const handleImageChange = (e) => {
                 <Grid item sx={{width:"150"}}>
                   <TextField
                    sx={{ width: "100%" }}
-                    //fullWidth={true}
                     name="name"
                     label='Student Name'
                     variant='outlined'
@@ -155,7 +144,6 @@ const handleImageChange = (e) => {
                 <Grid item>
                    <LocalizationProvider dateAdapter={AdapterDayjs}>
                       <DatePicker 
-                      
                       sx={{ width: "100%" }}
                       name="date" 
                       label="Date Of Birth"
@@ -172,12 +160,10 @@ const handleImageChange = (e) => {
                     <Button
                       sx={{ width: "100%" }}
                       variant='contained'
-                     // sx={{color:'white'}}
                       position='absolute'
                       onClick={()=>handleSubmit()}
-                      onclick={formik.handleReset}
-                      disabled={(formik.errors.name||formik.errors.rollnumber||formik.errors.date)||
-                      (!formik.values.name ||!formik.values.rollnumber||!formik.values.date)}
+                      disabled={(formik.errors.name||formik.errors.rollnumber||formik.errors.date||formik.errors.image_url)||
+                      (!formik.values.name ||!formik.values.rollnumber||!formik.values.date||!formik.values.image_url  )}
                       > SUBMIT DETAILS
                     </Button>
                 </Grid>
