@@ -1,7 +1,7 @@
 import React, { useState,useEffect,useCallback } from 'react'
 import Header from './Header';
 import{Button} from '@mui/material';
-import '../css/UserList.css'
+//import '../css/UserList.css'
 import StudentDetails from './StudentDetails';
 import axios from 'axios';
 
@@ -49,7 +49,7 @@ const handlePreviousPage = () => {
     return (
         <>  
         <Header/>
-         <div >
+         <div className='list'>
         <Button
           onClick={handlePreviousPage}
           variant='contained'

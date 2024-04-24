@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState} from 'react'
 import axios from 'axios'
 import '../css/UserForm.css';
 import Header from './Header'
@@ -29,7 +29,7 @@ image_url: yup
   .mixed()
   .required('Image is required')
   .test('fileFormat', 'Unsupported format', (value) => {
-    return value && ['image/jpg', 'image/jpeg', 'image/png'].includes(value.type);
+    return value && value.type && ['image/jpg', 'image/jpeg', 'image/png'].includes(value.type);
   }),
   name: yup.string().min(5).max(30).required(),
   rollnumber: yup.number().min(1).required(),
@@ -40,7 +40,7 @@ const UserForm = () => {
   
   const notify1=()=>toast("New Student Add Successfully");
   const[imagesrc,setImagesrc]=useState(defaultImage);
-  
+  //const fileInputRef = useRef(null); 
   
   const formik=useFormik({
     initialValues:initialState,
@@ -73,10 +73,13 @@ const handleImageChange = (e) => {
           'Content-Type': 'multipart/form-data'          //header for parsing form data
         }
       }).then((response) => {
-        //console.log(response);
+        console.log(response);
         notify1(); 
         setImagesrc(defaultImage)      
-        formik.resetForm(); 
+        formik.resetForm();
+         
+                
+        
       }).catch((error) => {
         console.error("Error:", error);
       });
@@ -103,6 +106,7 @@ const handleImageChange = (e) => {
                 width={150}/>
                 <Grid item>
                 <TextField 
+                //ref={fileInputRef}
                 position='absolute'
                 type="file"
                 name="image"
