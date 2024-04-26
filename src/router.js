@@ -6,6 +6,7 @@ import {
      import Home from './components/Home'
      import UserForm from "./components/UserForm";
      import UserList from "./components/UserList";
+     import Student from "./components/Student";
    
 
 
@@ -17,6 +18,7 @@ import {
             <Route path="/"element={<Home/>}/>
              <Route path="/addStudent" element={<UserForm/>}/>   
              <Route path="/getStudentDetails" element={<UserList/>}/>
+             <Route path="/search"element={<Student/>}/>
             
          </Routes>
         </BrowserRouter>

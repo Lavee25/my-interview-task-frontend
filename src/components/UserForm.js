@@ -16,6 +16,9 @@ import * as yup from 'yup';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+
+
+
 const initialState={
   image_url:null,
   name: "",
@@ -40,7 +43,6 @@ const UserForm = () => {
   
   const notify1=()=>toast("New Student Add Successfully");
   const[imagesrc,setImagesrc]=useState(defaultImage);
-  //const fileInputRef = useRef(null); 
   
   const formik=useFormik({
     initialValues:initialState,
@@ -120,12 +122,12 @@ const handleImageChange = (e) => {
                 <Grid item sx={{width:"150"}}>
                   <TextField
                    sx={{ width: "100%" }}
-                    name="name"
-                    label='Student Name'
-                    variant='outlined'
-                    value={formik.values.name}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
+                   name="name"
+                   label='Student Name'
+                   variant='outlined'
+                   value={formik.values.name}
+                   onChange={formik.handleChange}
+                   onBlur={formik.handleBlur}
                     placeholder=" Add student name here" required
                     error={formik.touched.name && Boolean(formik.errors.name)}
                     helperText={formik.touched.name && formik.errors.name }/>

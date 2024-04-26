@@ -8,7 +8,7 @@ import axios from 'axios';
 
 
 const UserList = () => {
-  const[studentdata,setStudentdata]=useState([]);
+  const[studentdata,setStudentdata]=useState({});
   const [page,setPage] = useState(1);             
   const [totalRecords, setTotalRecords] = useState(0);
 
@@ -27,9 +27,10 @@ const handleclick = useCallback(async()=>{
   }
  
 },[page]);
-    useEffect(() => {
-    handleclick(); // Fetch data when page changes
-    }, [handleclick]);
+
+  useEffect(() => {
+   handleclick();       // Fetch data when page changes
+  }, [handleclick]);
 
 
 const handleNextPage = () => {
@@ -50,6 +51,7 @@ const handlePreviousPage = () => {
         <>  
         <Header/>
          <div className='list'>
+          
         <Button
           onClick={handlePreviousPage}
           variant='contained'
